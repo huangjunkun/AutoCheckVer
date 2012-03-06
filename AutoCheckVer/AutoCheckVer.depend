@@ -1,0 +1,51 @@
+# depslib dependency file v1.0
+1331032711 source:e:\codeblocks\autocheckver\autocheckver\autocheckver.cpp
+	"stdafx.h"
+	"AutoCheckVer.h"
+
+1313581699 e:\codeblocks\autocheckver\autocheckver\stdafx.h
+	"targetver.h"
+	<stdio.h>
+	<stdlib.h>
+	<tchar.h>
+
+1307500159 e:\codeblocks\autocheckver\autocheckver\targetver.h
+
+1331033882 e:\codeblocks\autocheckver\autocheckver\autocheckver.h
+	<iostream>
+	<vector>
+	<bitset>
+	<algorithm>
+	<iterator>
+	<map>
+	<set>
+	<string>
+	<ctype.h>
+	<ctime>
+	<sstream>
+	<fstream>
+	<cassert>
+	<limits.h>
+	<string>
+	<Windows.h>
+	"main.h"
+
+1313842299 source:e:\codeblocks\autocheckver\autocheckver\main.cpp
+	"stdafx.h"
+	<iostream>
+	"main.h"
+	"AutoCheckVer.h"
+
+1331022801 e:\codeblocks\autocheckver\autocheckver\main.h
+	<exception>
+	<iostream>
+	<string>
+	<vector>
+	<fstream>
+	<tchar.h>
+	<cctype>
+	<cstdio>
+	<cstdlib>
+	<cassert>
+	<stdexcept>
+

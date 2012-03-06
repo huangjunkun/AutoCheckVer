@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AutoCheckVer", "AutoCheckVer\AutoCheckVer.vcproj", "{88910E1C-81FB-4833-9133-CE5685C2DCD2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{88910E1C-81FB-4833-9133-CE5685C2DCD2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{88910E1C-81FB-4833-9133-CE5685C2DCD2}.Debug|Win32.Build.0 = Debug|Win32
+		{88910E1C-81FB-4833-9133-CE5685C2DCD2}.Release|Win32.ActiveCfg = Release|Win32
+		{88910E1C-81FB-4833-9133-CE5685C2DCD2}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
