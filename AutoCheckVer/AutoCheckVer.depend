@@ -49,3 +49,53 @@
 	<cassert>
 	<stdexcept>
 
+1313842299 source:e:\github\autocheckver\autocheckver\main.cpp
+	"stdafx.h"
+	<iostream>
+	"main.h"
+	"AutoCheckVer.h"
+
+1313581699 e:\github\autocheckver\autocheckver\stdafx.h
+	"targetver.h"
+	<stdio.h>
+	<stdlib.h>
+	<tchar.h>
+
+1307500159 e:\github\autocheckver\autocheckver\targetver.h
+
+1331100942 e:\github\autocheckver\autocheckver\main.h
+	<exception>
+	<iostream>
+	<string>
+	<vector>
+	<fstream>
+	<tchar.h>
+	<cctype>
+	<cstdio>
+	<cstdlib>
+	<cassert>
+	<stdexcept>
+
+1331100345 e:\github\autocheckver\autocheckver\autocheckver.h
+	<iostream>
+	<vector>
+	<bitset>
+	<algorithm>
+	<iterator>
+	<map>
+	<set>
+	<string>
+	<ctype.h>
+	<ctime>
+	<sstream>
+	<fstream>
+	<cassert>
+	<limits.h>
+	<string>
+	<Windows.h>
+	"main.h"
+
+1331090391 source:e:\github\autocheckver\autocheckver\autocheckver.cpp
+	"stdafx.h"
+	"AutoCheckVer.h"
+

@@ -83,38 +83,26 @@ const unsigned CHAR_LOWER_UPPER_CHANGE_FACTOR = _T('z') - _T('a');
 #define toupper_t(ch) (islower_t(ch) ? ((ch) - CHAR_LOWER_UPPER_CHANGE_FACTOR) : (ch))
 //#define toupper_t(ch) isalpha_t(ch) ? (isupper_t(ch) ? (ch) : (ch + CHAR_LOWER_UPPER_CHANGE_FACTOR)) : (ch)
 #endif
-	//
-	//////////////////////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////////////////
 //#define LOG
 #ifdef _DEBUG //LOG//
-#ifndef __COUT_FOR_LOG_
-#define __COUT_FOR_LOG_
 
-// #define cout_trace tcout << __FUNCTION__ << " __cout4log trace:"
-// #define cout_debug tcout << __FUNCTION__ << " __cout4log debug:"
-// #define cout_info  tcout  << __FUNCTION__<< " __cout4log info:"
+#define cout_trace(msg) do { tcout << __FUNCTION__ << " __cout4log trace:" << (msg) << "\n"; } while(0)
+#define cout_debug(msg) do { tcout << __FUNCTION__ << " __cout4log debug:" << (msg) << "\n"; } while(0)
+#define cout_info(msg)  do { tcout << __FUNCTION__ << " __cout4log info:" << (msg) << "\n"; } while(0)
+#define cerr_info(msg)  do { tcerr << __FUNCTION__ << " __cerr4log info:" << (msg) << "\n"; } while(0)
+#define assert_false_notify(msg) do { const bool msg(false); assert((msg)); } while(0)
 
-#define cout_trace(msg) do { tcout << __FUNCTION__ << " __cout4log trace:" << msg << "\n"; } while(0)
-#define cout_debug(msg) do { tcout << __FUNCTION__ << " __cout4log debug:" << msg << "\n"; } while(0)
-#define cout_info(msg)  do { tcout << __FUNCTION__ << " __cout4log info:" << msg << "\n"; } while(0)
-#define cerr_info(msg)  do { tcerr << __FUNCTION__ << " __cerr4log info:" << msg << "\n"; } while(0)
 
-#define assert_false_notify(msg) do { const bool msg(false); assert(msg); } while(0)
-
-#endif // end __COUT_FOR_LOG_
 #else
-
-#ifndef __COUT_FOR_LOG_
-#define __COUT_FOR_LOG_
 
 #define cout_trace(msg) 0
 #define cout_debug(msg) 0
 #define cout_info(msg)  0
 #define cerr_info(msg)  0
-
 #define assert_false_notify(msg) 0
 
-#endif // end __COUT_FOR_LOG_
 #endif // end _DEBUG
 
 }// namespace junkun
@@ -122,106 +110,120 @@ const unsigned CHAR_LOWER_UPPER_CHANGE_FACTOR = _T('z') - _T('a');
 namespace junkun
 {
 
-	class c_single_file
-	{
-	public:
-		//		using namespace std;
-	public:
-		c_single_file() : _file(0) {}
-		c_single_file(const std::string& filename, const std::string& open_type="wb+")
-			: _file(0)
-		{
-			if ( !open(filename, open_type))
-			{
-				assert_false_notify (c_single_file_open_return_false);
-				throw std::logic_error("c_single_file_open_return_false");
-			}
-			//return;//error
-		}
-		c_single_file(const std::wstring& filename, const std::wstring& open_type=L"wb+")
-			: _file(0)
-		{
-			if ( !open(filename, open_type))
-			{
-				assert_false_notify (c_single_file_open_return_false);
-				throw std::logic_error("c_single_file_open_return_false");
-			}
-			//return;//error
-		}
+class c_single_file
+{
+public:
+    //		using namespace std;
+public:
+    c_single_file() : _file(0) {}
+    c_single_file(const std::string& filename, const std::string& open_type="wb+")
+        : _file(0)
+    {
+        if ( !open(filename, open_type))
+        {
+            assert_false_notify (c_single_file_open_return_false);
+            throw std::logic_error("c_single_file_open_return_false");
+        }
+        //return;//error
+    }
+    c_single_file(const std::wstring& filename, const std::wstring& open_type=L"wb+")
+        : _file(0)
+    {
+        if ( !open(filename, open_type))
+        {
+            assert_false_notify (c_single_file_open_return_false);
+            throw std::logic_error("c_single_file_open_return_false");
+        }
+        //return;//error
+    }
 
-		~c_single_file()
-		{
-			close();
-		}
-		// member function
-		bool open(const std::string& filename, const std::string& open_type="rb+")
-		{
-			_file = fopen(filename.c_str(), open_type.c_str());
-			return (NULL != _file) ;
-		}
+    ~c_single_file()
+    {
+        close();
+    }
+    // member function
+    bool open(const std::string& filename, const std::string& open_type="rb+")
+    {
+        _file = fopen(filename.c_str(), open_type.c_str());
+        return (NULL != _file) ;
+    }
 
-		bool open(const std::wstring& filename, const std::wstring& open_type=L"rb+")
-		{
-			_file = _wfopen(filename.c_str(), open_type.c_str());
-			return (NULL != _file) ;
-		}
+    bool open(const std::wstring& filename, const std::wstring& open_type=L"rb+")
+    {
+        _file = _wfopen(filename.c_str(), open_type.c_str());
+        return (NULL != _file) ;
+    }
 
-		size_t write(void* pData,size_t len)
-		{
-			assert(_file);
-			return fwrite(pData, 1, len, _file);
-		}
+    size_t write(void* pData,size_t len)
+    {
+        assert(_file);
+        return fwrite(pData, 1, len, _file);
+    }
 
-		size_t read(void* pData,size_t len)
-		{
-			assert(_file);
-			return fread(pData, 1, len, _file);
-		}
+    size_t read(void* pData,size_t len)
+    {
+        assert(_file);
+        return fread(pData, 1, len, _file);
+    }
 
-		bool close()
-		{
-			if (_file)
-			{
-				int res = fclose(_file);
-				_file = NULL;
-				return (0==res);
-			}
-			return false;
-		}
-		int flush()
-		{
-			assert (_file);
-			return fflush(_file);
-		}
-		char* gets(char* c_str, unsigned len)
-		{
-			assert (_file);
-			return fgets(c_str, len, _file);
-		}
-		wchar_t* gets(wchar_t* c_str, unsigned len)
-		{
-			assert (_file);
-			return fgetws(c_str, len, _file);
-		}
-		int puts(char* c_str)
-		{
-			assert (_file);
-			return fputs(c_str, _file);
-		}
-		int puts(wchar_t* c_str)
-		{
-			assert (_file);
-			return fputws(c_str, _file);
-		}
+    bool close()
+    {
+        if (_file)
+        {
+            int res = fclose(_file);
+            _file = NULL;
+            return (0==res);
+        }
+        return false;
+    }
+    int flush()
+    {
+        assert (_file);
+        return fflush(_file);
+    }
+    char* gets(char* c_str, unsigned len)
+    {
+        assert (_file);
+        return fgets(c_str, len, _file);
+    }
+    wchar_t* gets(wchar_t* c_str, unsigned len)
+    {
+        assert (_file);
+        return fgetws(c_str, len, _file);
+    }
+    int puts(char* c_str)
+    {
+        assert (_file);
+        return fputs(c_str, _file);
+    }
+    int puts(wchar_t* c_str)
+    {
+        assert (_file);
+        return fputws(c_str, _file);
+    }
 
-		int eof() { assert (_file); return feof(_file); }
-		int error() { assert (_file); return ferror(_file); }
-		bool is_opened() const { return NULL != _file; }
-		FILE* file_ptr() { return _file; }
+    int eof()
+    {
+        assert (_file);
+        return feof(_file);
+    }
+    int error()
+    {
+        assert (_file);
+        return ferror(_file);
+    }
+    bool is_opened() const
+    {
+        return NULL != _file;
+    }
+    FILE* file_ptr()
+    {
+        return _file;
+    }
 
-	private:
-		FILE* _file;
-	};//class c_single_file
+private:
+    FILE* _file;
+};//class c_single_file
 
 
 }// namespace junkun

@@ -239,6 +239,24 @@ static string_t s_default_server_path;
 
 void load_config(const string_t& config_file = _T(".\\config\\autocheckver.conf"));//
 
+
+template <typename _TChar>
+struct commit_info_t;
+
+template <typename _TChar>
+basic_istream<_TChar, char_traits<_TChar> >&
+read(basic_istream<_TChar, char_traits<_TChar> >& ins, commit_info_t<_TChar>& obj);
+template <typename _TChar>
+basic_ostream<_TChar, char_traits<_TChar> >&
+write(basic_ostream<_TChar, char_traits<_TChar> >& outs, const commit_info_t<_TChar>& obj);
+
+template <typename _TChar>
+basic_istream<_TChar, char_traits<_TChar> >&
+operator >> (basic_istream<_TChar, char_traits<_TChar> >& ins, commit_info_t<_TChar>& obj);
+template <typename _TChar>
+basic_ostream<_TChar, char_traits<_TChar> >&
+operator << (basic_ostream<_TChar, char_traits<_TChar> >& outs, const commit_info_t<_TChar>& obj);
+
 template <typename _TChar>
 struct commit_info_t
 {
@@ -279,17 +297,17 @@ struct commit_info_t
 // 	basic_istream<_TChar, char_traits<_TChar> >& operator >> (basic_istream<_TChar, char_traits<_TChar> >& ins);
 // 	basic_ostream<_TChar, char_traits<_TChar> >& operator << (basic_ostream<_TChar, char_traits<_TChar> >& outs);
 //
-   friend basic_istream<_TChar, char_traits<_TChar> >& operator >> <>(basic_istream<_TChar, char_traits<_TChar> >& ins,\
-           commit_info_t<_TChar>& obj);
-   friend basic_ostream<_TChar, char_traits<_TChar> >& operator << <>(basic_ostream<_TChar, char_traits<_TChar> >& outs,\
-           const commit_info_t<_TChar>& obj);
+    friend basic_istream<_TChar, char_traits<_TChar> >&
+    operator >> <>(basic_istream<_TChar, char_traits<_TChar> >& ins, commit_info_t<_TChar>& obj);
+    friend basic_ostream<_TChar, char_traits<_TChar> >&
+    operator << <>(basic_ostream<_TChar, char_traits<_TChar> >& outs, const commit_info_t<_TChar>& obj);
 
-//    template <typename char_t>
-//    friend basic_istream<char_t, char_traits<char_t> >& operator >> (basic_istream<char_t, char_traits<char_t> >& ins,\
-//            commit_info_t<char_t>& obj);
-//    template <typename char_t>
-//    friend basic_ostream<char_t, char_traits<char_t> >& operator << (basic_ostream<char_t, char_traits<char_t> >& outs,\
-//            const commit_info_t<char_t>& obj);
+//    //template <typename _TChar>
+//    friend basic_istream<_TChar, char_traits<_TChar> >&
+//    operator >> (basic_istream<_TChar, char_traits<_TChar> >& ins, commit_info_t<char_t>& obj);
+//    //template <typename _TChar>
+//    friend basic_ostream<_TChar, char_traits<_TChar> >&
+//    operator << (basic_ostream<_TChar, char_traits<_TChar> >& outs, const commit_info_t<_TChar>& obj);
 
 private:
     vector<TString> tag_values;
@@ -306,10 +324,10 @@ private:
         release_date = &tag_values[5];
         ver_info = &tag_values[6];
     }
-	friend basic_istream<char_t, char_traits<char_t> >&
-		read(basic_istream<char_t, char_traits<char_t> >& ins, commit_info_t<char_t>& obj);
-	friend basic_ostream<char_t, char_traits<char_t> >&
-		write(basic_ostream<char_t, char_traits<char_t> >& outs, const commit_info_t<char_t>& obj);
+    friend basic_istream<_TChar, char_traits<_TChar> >&
+    read<>(basic_istream<_TChar, char_traits<_TChar> >& ins, commit_info_t<_TChar>& obj);
+    friend basic_ostream<_TChar, char_traits<_TChar> >&
+    write<>(basic_ostream<_TChar, char_traits<_TChar> >& outs, const commit_info_t<_TChar>& obj);
 }; //commit_info_t _TChar
 
 struct compare_moudle_name_less
@@ -432,101 +450,101 @@ template <typename _TChar>
 basic_ostream<char_t, char_traits<char_t> >&
 write( basic_ostream<char_t, char_traits<char_t> >& outs, const commit_info_t<char_t>& obj )
 {
-	for (unsigned i =0; i < S_TAGS_SIZE; ++i)
-	{
-		outs << ARRAY_TAGS[i] << obj.tag_values[i] << RETURN_TCHAR;
-	}
-	return outs;
+    for (unsigned i =0; i < S_TAGS_SIZE; ++i)
+    {
+        outs << ARRAY_TAGS[i] << obj.tag_values[i] << RETURN_TCHAR;
+    }
+    return outs;
 }
 
 template <typename _TChar>
 basic_istream<char_t, char_traits<char_t> >&
 read( basic_istream<char_t, char_traits<char_t> >& ins, commit_info_t<char_t>& obj )
 {
-	typedef basic_string<_TChar> _TString;
-	unsigned getline_cout = 0;
-	while (ins && getline_cout < S_TAGS_SIZE)
-	{
-		_TString read_line;
-		std::getline(ins, read_line, RETURN_TCHAR);
-		if (read_line.empty())
-			continue;
+    typedef basic_string<_TChar> _TString;
+    unsigned getline_cout = 0;
+    while (ins && getline_cout < S_TAGS_SIZE)
+    {
+        _TString read_line;
+        std::getline(ins, read_line, RETURN_TCHAR);
+        if (read_line.empty())
+            continue;
 
-		if (S_TAGS_SIZE-1 != getline_cout)// the last value.
-		{
-			/// 可能字段顺序错乱！需考虑遍历查找匹配赋值，并给予警告！
-			unsigned find_pos = read_line.find(COMMIT_INFO_TAGS[getline_cout]);
-			if (read_line.npos == find_pos)
-			{
-				//assert (false);
-				unsigned tag_index = 0;
-				for (; tag_index < S_TAGS_SIZE; ++tag_index)
-				{
-					find_pos = read_line.find(COMMIT_INFO_TAGS[tag_index]);
-					if (read_line.npos != find_pos)
-						break;
-				}
-				if (tag_index < S_TAGS_SIZE)
-				{
-					cerr_info(" warning: " << read_line << " .the field's seqeuence Exception.");
-					obj.tag_values[tag_index] = trim_tstring(read_line.substr(find_pos + COMMIT_INFO_TAGS[tag_index].size(),
-						wstring::npos));
-					getline_cout = tag_index;
-				}
-				else
-				{
-					/// 没有字段名，强加给当前索引值getline_cout对于的字段域，并警告！
-					cerr_info(" warning: " << read_line << " .no field name, Error.");
-					obj.tag_values[getline_cout] = read_line;
-				}
-			}
-			else
-			{
-				obj.tag_values[getline_cout] = trim_tstring(read_line.substr(find_pos + COMMIT_INFO_TAGS[getline_cout].size(),
-					wstring::npos));
+        if (S_TAGS_SIZE-1 != getline_cout)// the last value.
+        {
+            /// 可能字段顺序错乱！需考虑遍历查找匹配赋值，并给予警告！
+            unsigned find_pos = read_line.find(COMMIT_INFO_TAGS[getline_cout]);
+            if (read_line.npos == find_pos)
+            {
+                //assert (false);
+                unsigned tag_index = 0;
+                for (; tag_index < S_TAGS_SIZE; ++tag_index)
+                {
+                    find_pos = read_line.find(COMMIT_INFO_TAGS[tag_index]);
+                    if (read_line.npos != find_pos)
+                        break;
+                }
+                if (tag_index < S_TAGS_SIZE)
+                {
+                    cerr_info(" warning: " << read_line << " .the field's seqeuence Exception.");
+                    obj.tag_values[tag_index] = trim_tstring(read_line.substr(find_pos + COMMIT_INFO_TAGS[tag_index].size(),
+                                                wstring::npos));
+                    getline_cout = tag_index;
+                }
+                else
+                {
+                    /// 没有字段名，强加给当前索引值getline_cout对于的字段域，并警告！
+                    cerr_info(" warning: " << read_line << " .no field name, Error.");
+                    obj.tag_values[getline_cout] = read_line;
+                }
+            }
+            else
+            {
+                obj.tag_values[getline_cout] = trim_tstring(read_line.substr(find_pos + COMMIT_INFO_TAGS[getline_cout].size(),
+                                               wstring::npos));
 
-				cout_trace (obj.tag_values[getline_cout] << " [value] size:" << obj.tag_values[getline_cout].size());
+                cout_trace (obj.tag_values[getline_cout] << " [value] size:" << obj.tag_values[getline_cout].size());
 
-			}
-		}
+            }
+        }
 
-		if (S_TAGS_SIZE-1 == getline_cout)
-		{
-			// just for VER_INFO_TAG...
-			_TString value;
-			value += RETURN_TCHAR;
-			unsigned find_pos = read_line.find(COMMIT_INFO_TAGS[getline_cout]);
-			if ( read_line.npos == find_pos)
-			{
-				/// 没有字段名，强加给当前索引值getline_cout对于的字段域，并警告！
-				value += read_line + RETURN_TCHAR;
-				cerr_info(" warning: find no field to match, but force it to assgin default field.");
-			}
-			{
-				// just do it !
-				read_line.clear();
-				std::getline(ins, read_line, RETURN_TCHAR);
-				while (!read_line.empty())
-				{
-					value += read_line + RETURN_TCHAR;
-					read_line.clear();
-					std::getline(ins, read_line, RETURN_TCHAR);
-				}
-				obj.tag_values[getline_cout] = value;
-				cout_trace(obj.tag_values[getline_cout] << " [value] size:" << obj.tag_values[getline_cout].size());
-				break;
-			}
-		}
-		++getline_cout;
-	}
-	/// format the ver_num.
-	if (!(*obj.ver_num).empty())
-	{
-		ver_num_list ver_num(*obj.ver_num);
-		*obj.ver_num = ver_num.str();
-	}
+        if (S_TAGS_SIZE-1 == getline_cout)
+        {
+            // just for VER_INFO_TAG...
+            _TString value;
+            value += RETURN_TCHAR;
+            unsigned find_pos = read_line.find(COMMIT_INFO_TAGS[getline_cout]);
+            if ( read_line.npos == find_pos)
+            {
+                /// 没有字段名，强加给当前索引值getline_cout对于的字段域，并警告！
+                value += read_line + RETURN_TCHAR;
+                cerr_info(" warning: find no field to match, but force it to assgin default field.");
+            }
+            {
+                // just do it !
+                read_line.clear();
+                std::getline(ins, read_line, RETURN_TCHAR);
+                while (!read_line.empty())
+                {
+                    value += read_line + RETURN_TCHAR;
+                    read_line.clear();
+                    std::getline(ins, read_line, RETURN_TCHAR);
+                }
+                obj.tag_values[getline_cout] = value;
+                cout_trace(obj.tag_values[getline_cout] << " [value] size:" << obj.tag_values[getline_cout].size());
+                break;
+            }
+        }
+        ++getline_cout;
+    }
+    /// format the ver_num.
+    if (!(*obj.ver_num).empty())
+    {
+        ver_num_list ver_num(*obj.ver_num);
+        *obj.ver_num = ver_num.str();
+    }
 
-	return ins;
+    return ins;
 }
 
 // template <typename _TChar>
@@ -542,109 +560,108 @@ read( basic_istream<char_t, char_traits<char_t> >& ins, commit_info_t<char_t>& o
 // 	return write(outs, *this);
 // }
 
-
 template <typename _TChar>
-basic_istream<_TChar, char_traits<_TChar> >& operator >> (basic_istream<_TChar, char_traits<_TChar> >& ins, \
-        commit_info_t<_TChar>& obj)
+basic_istream<_TChar, char_traits<_TChar> >&
+operator >> (basic_istream<_TChar, char_traits<_TChar> >& ins, commit_info_t<_TChar>& obj)
 {
-	//return read(ins, obj);
-	typedef basic_string<_TChar> _TString;
-	unsigned getline_cout = 0;
-	while (ins && getline_cout < S_TAGS_SIZE)
-	{
-		_TString read_line;
-		std::getline(ins, read_line, RETURN_TCHAR);
-		if (read_line.empty())
-			continue;
+    //return read(ins, obj);
+    typedef basic_string<_TChar> _TString;
+    unsigned getline_cout = 0;
+    while (ins && getline_cout < S_TAGS_SIZE)
+    {
+        _TString read_line;
+        std::getline(ins, read_line, RETURN_TCHAR);
+        if (read_line.empty())
+            continue;
 
-		if (S_TAGS_SIZE-1 != getline_cout)// the last value.
-		{
-			/// 可能字段顺序错乱！需考虑遍历查找匹配赋值，并给予警告！
-			unsigned find_pos = read_line.find(COMMIT_INFO_TAGS[getline_cout]);
-			if (read_line.npos == find_pos)
-			{
-				//assert (false);
-				unsigned tag_index = 0;
-				for (; tag_index < S_TAGS_SIZE; ++tag_index)
-				{
-					find_pos = read_line.find(COMMIT_INFO_TAGS[tag_index]);
-					if (read_line.npos != find_pos)
-						break;
-				}
-				if (tag_index < S_TAGS_SIZE)
-				{
-					cerr_info(" warning: " << read_line << " .the field's seqeuence Exception.");
-					obj.tag_values[tag_index] = trim_tstring(read_line.substr(find_pos + COMMIT_INFO_TAGS[tag_index].size(),
-						wstring::npos));
-					getline_cout = tag_index;
-				}
-				else
-				{
-					/// 没有字段名，强加给当前索引值getline_cout对于的字段域，并警告！
-					cerr_info(" warning: " << read_line << " .no field name, Error.");
-					obj.tag_values[getline_cout] = read_line;
-				}
-			}
-			else
-			{
-				obj.tag_values[getline_cout] = trim_tstring(read_line.substr(find_pos + COMMIT_INFO_TAGS[getline_cout].size(),
-					wstring::npos));
+        if (S_TAGS_SIZE-1 != getline_cout)// the last value.
+        {
+            /// 可能字段顺序错乱！需考虑遍历查找匹配赋值，并给予警告！
+            unsigned find_pos = read_line.find(COMMIT_INFO_TAGS[getline_cout]);
+            if (read_line.npos == find_pos)
+            {
+                //assert (false);
+                unsigned tag_index = 0;
+                for (; tag_index < S_TAGS_SIZE; ++tag_index)
+                {
+                    find_pos = read_line.find(COMMIT_INFO_TAGS[tag_index]);
+                    if (read_line.npos != find_pos)
+                        break;
+                }
+                if (tag_index < S_TAGS_SIZE)
+                {
+                    cerr_info(" warning: " << read_line << " .the field's seqeuence Exception.");
+                    obj.tag_values[tag_index] = trim_tstring(read_line.substr(find_pos + COMMIT_INFO_TAGS[tag_index].size(),
+                                                wstring::npos));
+                    getline_cout = tag_index;
+                }
+                else
+                {
+                    /// 没有字段名，强加给当前索引值getline_cout对于的字段域，并警告！
+                    cerr_info(" warning: " << read_line << " .no field name, Error.");
+                    obj.tag_values[getline_cout] = read_line;
+                }
+            }
+            else
+            {
+                obj.tag_values[getline_cout] = trim_tstring(read_line.substr(find_pos + COMMIT_INFO_TAGS[getline_cout].size(),
+                                               wstring::npos));
 
-				cout_trace (obj.tag_values[getline_cout] << " [value] size:" << obj.tag_values[getline_cout].size());
+                cout_trace (obj.tag_values[getline_cout] << " [value] size:" << obj.tag_values[getline_cout].size());
 
-			}
-		}
+            }
+        }
 
-		if (S_TAGS_SIZE-1 == getline_cout)
-		{
-			// just for VER_INFO_TAG...
-			_TString value;
-			value += RETURN_TCHAR;
-			unsigned find_pos = read_line.find(COMMIT_INFO_TAGS[getline_cout]);
-			if ( read_line.npos == find_pos)
-			{
-				/// 没有字段名，强加给当前索引值getline_cout对于的字段域，并警告！
-				value += read_line + RETURN_TCHAR;
-				cerr_info(" warning: find no field to match, but force it to assgin default field.");
-			}
-			{
-				// just do it !
-				read_line.clear();
-				std::getline(ins, read_line, RETURN_TCHAR);
-				while (!read_line.empty())
-				{
-					value += read_line + RETURN_TCHAR;
-					read_line.clear();
-					std::getline(ins, read_line, RETURN_TCHAR);
-				}
-				obj.tag_values[getline_cout] = value;
-				cout_trace(obj.tag_values[getline_cout] << " [value] size:" << obj.tag_values[getline_cout].size());
-				break;
-			}
-		}
-		++getline_cout;
-	}
-	/// format the ver_num.
-	if (!(*obj.ver_num).empty())
-	{
-		ver_num_list ver_num(*obj.ver_num);
-		*obj.ver_num = ver_num.str();
-	}
+        if (S_TAGS_SIZE-1 == getline_cout)
+        {
+            // just for VER_INFO_TAG...
+            _TString value;
+            value += RETURN_TCHAR;
+            unsigned find_pos = read_line.find(COMMIT_INFO_TAGS[getline_cout]);
+            if ( read_line.npos == find_pos)
+            {
+                /// 没有字段名，强加给当前索引值getline_cout对于的字段域，并警告！
+                value += read_line + RETURN_TCHAR;
+                cerr_info(" warning: find no field to match, but force it to assgin default field.");
+            }
+            {
+                // just do it !
+                read_line.clear();
+                std::getline(ins, read_line, RETURN_TCHAR);
+                while (!read_line.empty())
+                {
+                    value += read_line + RETURN_TCHAR;
+                    read_line.clear();
+                    std::getline(ins, read_line, RETURN_TCHAR);
+                }
+                obj.tag_values[getline_cout] = value;
+                cout_trace(obj.tag_values[getline_cout] << " [value] size:" << obj.tag_values[getline_cout].size());
+                break;
+            }
+        }
+        ++getline_cout;
+    }
+    /// format the ver_num.
+    if (!(*obj.ver_num).empty())
+    {
+        ver_num_list ver_num(*obj.ver_num);
+        *obj.ver_num = ver_num.str();
+    }
 
-	return ins;
+    return ins;
 }
 
 template <typename _TChar>
-basic_ostream<_TChar, char_traits<_TChar> >& operator << (basic_ostream<_TChar, char_traits<_TChar> >& outs,\
-        const commit_info_t<_TChar>& obj)
+basic_ostream<_TChar, char_traits<_TChar> >&
+operator << (basic_ostream<_TChar, char_traits<_TChar> >& outs, const commit_info_t<_TChar>& obj)
 {
-	//return write(outs, obj);
+    //return write(outs, obj);
 
-	for (unsigned i =0; i < S_TAGS_SIZE; ++i)
-	{
-		outs << ARRAY_TAGS[i] << obj.tag_values[i] << RETURN_TCHAR;
-	}
-	return outs;
+    for (unsigned i =0; i < S_TAGS_SIZE; ++i)
+    {
+        outs << ARRAY_TAGS[i] << obj.tag_values[i] << RETURN_TCHAR;
+    }
+    return outs;
 }
 
 typedef commit_info_t<char_t> commit_info_tchar;
